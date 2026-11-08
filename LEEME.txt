@@ -4,8 +4,9 @@ HOST PS4 13.52 - lanzador de GoldHEN
 Qué es
 ------
 Una página web que se abre EN EL NAVEGADOR DE LA PS4 y lanza el exploit +
-payload (GoldHEN / PS4-HEN). Firmwares: 13.02, 13.04, 13.50 y 13.52.
-Basado en github.com/raw13g/raw13g.github.io (solo se ha cambiado el diseño).
+GoldHEN oficial v2.4b18.13. Firmwares: 13.02, 13.04, 13.50 y 13.52.
+Basado en github.com/raw13g/raw13g.github.io (solo se ha cambiado el diseño y
+se ha actualizado el payload al GoldHEN oficial).
 
 Uso rápido
 ----------

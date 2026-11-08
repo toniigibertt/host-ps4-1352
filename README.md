@@ -1,13 +1,13 @@
 # Host PS4 13.52 — lanzador de GoldHEN
 
 Host web (una página que se abre **en el navegador de la PS4**) que ejecuta el
-exploit y lanza el payload **GoldHEN / PS4-HEN** en consolas con firmware
+exploit y lanza **GoldHEN oficial v2.4b18.13** en consolas con firmware
 **13.52** (y también 13.02, 13.04 y 13.50).
 
 Está basado en el proyecto [raw13g/raw13g.github.io](https://github.com/raw13g/raw13g.github.io)
-(“RAW GAME”). La lógica del exploit, los offsets y los payloads son los
-originales; **aquí solo se ha cambiado la presentación** (HTML, CSS, textos en
-español, logo y nombre).
+(“RAW GAME”). La lógica del exploit y los offsets son los originales; se ha
+cambiado la presentación (HTML, CSS, textos en español, logo y nombre) y se ha
+actualizado el payload al **GoldHEN oficial v2.4b18.13**.
 
 > ⚠️ **Úsalo bajo tu propia responsabilidad.** Es un jailbreak: puede provocar
 > cuelgues o *kernel panic* (la consola se apaga o se reinicia). No actualices la
@@ -25,9 +25,11 @@ español, logo y nombre).
 3. `jb.js` explota un fallo de WebKit (bug 663) y obtiene lectura/escritura de
    memoria del kernel.
 4. Aplica el parche de kernel correspondiente (`patches/1352.bin` en 13.52).
-5. Copia el payload (`goldhen.bin`) en memoria y lo ejecuta con `pthread_create`.
-6. Si todo va bien, aparece **LISTO**: el HEN queda activo hasta que apagues
-   la consola.
+5. Copia el payload (`goldhen.bin`, GoldHEN oficial v2.4b18.13) en memoria y lo
+   ejecuta con `pthread_create`.
+6. Si todo va bien, aparece **LISTO**: GoldHEN queda activo hasta que apagues
+   la consola. Tendrás su menú en **Ajustes**, FTP en el puerto **2121** y
+   PayLoader en el **9090**.
 
 No instala nada permanente, no modifica el firmware en disco y no hace falta
 un USB. Solo hay que abrir la página en el navegador de la PS4.
@@ -44,8 +46,8 @@ un USB. Solo hay que abrir la página en el navegador de la PS4.
 | `core.js`, `mem.js`, `int64.js` | Primitivas de memoria del exploit |
 | `ps4_offsets.js` | Tabla de offsets por firmware |
 | `rpc_worker.js` | Worker auxiliar del exploit |
-| `goldhen.bin` | Payload que se usa en 13.52 |
-| `payload2.bin` | Payload para 13.50 / 13.02 / 13.04 |
+| `goldhen.bin` | GoldHEN oficial v2.4b18.13 (se usa en 13.52) |
+| `payload2.bin` | GoldHEN oficial v2.4b18.13 (13.50 / 13.02 / 13.04) |
 | `patches/1352.bin` | Parche de kernel de 13.52 |
 | `patches/1350.bin`, `patches/1302.bin` | Parches de otros firmwares |
 | `cache.appcache` | Caché offline (la PS4 guarda la página) |
@@ -131,12 +133,21 @@ error ahí puede provocar un *kernel panic*.
 
 ### Cambiar el payload
 
-`goldhen.bin` es el payload que el host original usa para 13.52 (imprime los
-mensajes de GoldHEN, pero es la build que el proyecto da por buena). **No
-sustituyas este `.bin` por un GoldHEN oficial compilado para otro firmware**: el
-autor del proyecto original documenta que un GoldHEN parcheado le provocó
-*kernel panic* 2 de 2 veces en 13.52. Si consigues un payload verificado para
-13.52, guárdalo como `goldhen.bin` y actualiza `cache.appcache`.
+`goldhen.bin` y `payload2.bin` son **el mismo GoldHEN oficial v2.4b18.13**
+(297.496 bytes, empieza por `0xE9`). Esa versión soporta oficialmente 13.00,
+13.02, 13.04, 13.50, 13.52 y 14.00, así que sirve para todos los firmwares de
+este host.
+
+Si en el futuro quieres actualizarlo:
+
+1. Descarga el `goldhen.bin` oficial nuevo.
+2. Comprueba que empieza por el byte `0xE9` (el loader del host lo exige).
+3. Sustituye `goldhen.bin` y `payload2.bin` por ese archivo.
+4. Actualiza los hashes y el `# rev` de `cache.appcache`.
+5. Comprueba en el `CHANGELOG` del release que soporta tu firmware exacto.
+
+No cambies el parche de kernel (`patches/1352.bin`): es independiente de
+GoldHEN y lo necesita el exploit.
 
 ---
 
@@ -158,7 +169,7 @@ autor del proyecto original documenta que un GoldHEN parcheado le provocó
   (licencia MIT para su código; ver `LICENSE`).
 * El exploit parte del trabajo de **thebelx** y de otros autores de la escena
   PS4 (ver el issue #1 del repositorio original).
-* GoldHEN / PS4-HEN: **SiSTRo** y colaboradores.
+* GoldHEN oficial v2.4b18.13: **SiSTRo** y colaboradores.
 * `core.js`, `mem.js`, `int64.js`, los payloads `.bin` y los parches de kernel
   conservan las licencias de sus autores originales.
 
