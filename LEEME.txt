@@ -1,0 +1,32 @@
+HOST PS4 13.52 - lanzador de GoldHEN
+====================================
+
+Qué es
+------
+Una página web que se abre EN EL NAVEGADOR DE LA PS4 y lanza el exploit +
+payload (GoldHEN / PS4-HEN). Firmwares: 13.02, 13.04, 13.50 y 13.52.
+Basado en github.com/raw13g/raw13g.github.io (solo se ha cambiado el diseño).
+
+Uso rápido
+----------
+1) Sube TODA esta carpeta a un hosting (GitHub Pages o Netlify Drop), o usa el
+   servidor local:
+     - Clic derecho en INICIAR-LOCAL.ps1 > Ejecutar con PowerShell
+     - Abre en la PS4 la dirección http://TU-IP-LOCAL:8080/ que muestra el script
+2) En la PS4: cierra los juegos, abre el navegador y entra a la URL.
+3) La primera vez espera "Guardando en caché..." y toca la pantalla.
+4) Espera 1-2 minutos sin tocar nada.
+   - "LISTO" = GoldHEN cargado.
+   - "Reinicia la consola" = falló; reinicia la PS4 y reintenta.
+5) Para ver el registro técnico: añade ?log=1 a la URL.
+
+Avisos
+------
+- Es un jailbreak: puede dar kernel panic (cuelgue/apagado). Bajo tu
+  responsabilidad.
+- No es permanente: se pierde al apagar la PS4.
+- No actualices la consola.
+- No cambies la lógica de jb.js/core.js/mem.js ni los .bin: puede romper la
+  consola. Para personalizar nombre, colores y logo edita index.html y jb.html.
+
+Lee README.md para la guía completa (publicar, personalizar, problemas).

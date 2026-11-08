@@ -1,0 +1,229 @@
+﻿<!doctype html>
+<html lang="es" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a0c12" />
+    <title>Host PS4 13.52</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2311141c' stroke='%23f0c04a' stroke-width='4'/%3E%3Cpath d='M35 12 L21 36 h9 l-3 16 14-24 h-9 z' fill='%23f0c04a'/%3E%3C/svg%3E" />
+    <style>
+      :root {
+        --bg: #0a0c12;
+        --panel-2: #0d1118;
+        --line: #1f2836;
+        --txt: #cfd6e2;
+        --dim: #7c8798;
+        --gold: #f0c04a;
+        --gold-2: #d99a1f;
+        --ok: #6fd39a;
+        --bad: #e08a7c;
+        --warn: #e6c97a;
+      }
+      * { box-sizing: border-box; }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+      }
+      body {
+        background:
+          radial-gradient(900px 500px at 50% -10%, rgba(240, 192, 74, 0.1), transparent 70%),
+          var(--bg);
+        color: var(--txt);
+        font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: var(--panel-2);
+        border-bottom: 1px solid var(--line);
+      }
+      header svg {
+        width: 30px;
+        height: 30px;
+        flex: none;
+      }
+      header b {
+        font-size: 16px;
+        letter-spacing: 0.16em;
+        color: #f2f5fa;
+        text-transform: uppercase;
+      }
+      header .pill {
+        margin-left: auto;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: var(--gold);
+        border: 1px solid rgba(240, 192, 74, 0.35);
+        background: rgba(240, 192, 74, 0.06);
+        border-radius: 999px;
+        padding: 4px 12px;
+        white-space: nowrap;
+      }
+
+      /* Escenario de ejecuciÃ³n: logo + mensaje + spinner + consejo. */
+      #stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        padding: 24px 20px 40px;
+        text-align: center;
+      }
+      .logo {
+        width: 104px;
+        height: 104px;
+        filter: drop-shadow(0 10px 30px rgba(240, 192, 74, 0.28));
+      }
+      #msg {
+        display: none;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #f2f5fa;
+        max-width: 640px;
+      }
+      #spin {
+        width: 52px;
+        height: 52px;
+        border: 4px solid #1c2533;
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #hint {
+        margin: 0;
+        max-width: 560px;
+        font-size: 13.5px;
+        color: var(--dim);
+      }
+      #hint b { color: var(--gold); }
+
+      #wrap {
+        display: none;
+      }
+      #state,
+      #out {
+        display: none;
+      }
+
+      /* Estados que pone jb.js en <body>: done / fail / log. */
+      body.done #spin,
+      body.fail #spin {
+        display: none;
+      }
+      body.done #hint,
+      body.fail #hint {
+        display: none;
+      }
+      body.fail #msg {
+        display: block;
+        color: var(--warn);
+      }
+      body.done #msg {
+        display: block;
+        color: var(--ok);
+      }
+
+      /* ?log=1 â€” registro completo de pasos, para diagnosticar. */
+      body.log #stage {
+        display: none;
+      }
+      body.log #wrap {
+        display: block;
+        padding: 16px 20px 20px;
+      }
+      body.log #state {
+        display: block;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 10px;
+        color: #f2f5fa;
+      }
+      body.log #out {
+        display: block;
+        white-space: pre-wrap;
+        font: 12px/1.45 Consolas, monospace;
+        background: #0f141b;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 12px 14px;
+        height: calc(100vh - 150px);
+        overflow-y: auto;
+      }
+
+      .ok { color: var(--ok); }
+      .bad { color: var(--bad); }
+      .warn { color: var(--warn); }
+      .safe { color: var(--ok); }
+      .danger { color: var(--bad); }
+      code { color: #9fb3d0; }
+
+      @media (max-width: 520px) {
+        .logo { width: 84px; height: 84px; }
+        #msg { font-size: 20px; }
+        #spin { width: 44px; height: 44px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffd76a" />
+            <stop offset="1" stop-color="#d99a1f" />
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="30" fill="none" stroke="url(#lg)" stroke-width="2" opacity=".45" />
+        <circle cx="32" cy="32" r="24" fill="#11141c" stroke="url(#lg)" stroke-width="2.5" />
+        <path d="M35 12 L21 36 h9 l-3 16 14-24 h-9 z" fill="url(#lg)" />
+      </svg>
+      <b>Host PS4</b>
+      <span class="pill">PS4 &middot; 13.52</span>
+    </header>
+
+    <div id="stage">
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffd76a" />
+            <stop offset="1" stop-color="#d99a1f" />
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="30" fill="none" stroke="url(#lg2)" stroke-width="1.5" opacity=".35" />
+        <circle cx="32" cy="32" r="23" fill="#0f131b" stroke="url(#lg2)" stroke-width="2.5" />
+        <path d="M35 11 L20 37 h9 l-3 16 15-26 h-9 z" fill="url(#lg2)" />
+      </svg>
+      <div id="msg">Reinicia la consola</div>
+      <div id="spin"></div>
+      <p id="hint">
+        No cierres el navegador ni apagues la consola. El proceso puede tardar
+        <b>1&ndash;2 minutos</b>.
+      </p>
+    </div>
+
+    <div id="wrap">
+      <div id="state"></div>
+      <div id="out"></div>
+    </div>
+
+    <script type="module">
+      import "./jb.js?v=19";
+    </script>
+  </body>
+</html>

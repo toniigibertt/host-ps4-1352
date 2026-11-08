@@ -1,0 +1,347 @@
+﻿<!DOCTYPE html>
+<html lang="es" manifest="cache.appcache">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0c12">
+<title>Host PS4 13.52</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2311141c' stroke='%23f0c04a' stroke-width='4'/%3E%3Cpath d='M35 12 L21 36 h9 l-3 16 14-24 h-9 z' fill='%23f0c04a'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0a0c12;
+    --panel: #10141d;
+    --panel-2: #0d1118;
+    --line: #1f2836;
+    --txt: #cfd6e2;
+    --dim: #7c8798;
+    --gold: #f0c04a;
+    --gold-2: #d99a1f;
+    --ok: #6fd39a;
+    --bad: #e08a7c;
+    --warn: #e6c97a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(240,192,74,.10), transparent 70%),
+      var(--bg);
+    color: var(--txt);
+    font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Franja superior: cambia HOST_NAME aquÃ­ y en jb.html para renombrar el host */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  header svg { width: 30px; height: 30px; flex: none; }
+  header b {
+    font-size: 16px;
+    letter-spacing: .16em;
+    color: #f2f5fa;
+    text-transform: uppercase;
+  }
+  header .pill {
+    margin-left: auto;
+    font-size: 12px;
+    letter-spacing: .08em;
+    color: var(--gold);
+    border: 1px solid rgba(240,192,74,.35);
+    background: rgba(240,192,74,.06);
+    border-radius: 999px;
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 620px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 34px 32px 30px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+  }
+  .logo {
+    width: 108px;
+    height: 108px;
+    margin: 0 auto 20px;
+    display: block;
+    filter: drop-shadow(0 8px 26px rgba(240,192,74,.25));
+  }
+  h1 {
+    margin: 0 0 10px;
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: .01em;
+    color: #f2f5fa;
+  }
+  h1.warn { color: var(--warn); }
+  h1.bad  { color: var(--bad); }
+  h1.ok   { color: var(--ok); }
+
+  #det { margin: 0 0 6px; font-size: 14px; color: var(--dim); }
+  #det b { color: var(--txt); font-weight: 600; }
+
+  #action {
+    margin: 14px 0 0;
+    min-height: 22px;
+    font-size: 15px;
+    color: var(--gold);
+  }
+
+  #bar {
+    height: 4px;
+    margin: 18px auto 10px;
+    width: 100%;
+    max-width: 340px;
+    background: #1a2230;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  #bar i {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold-2), var(--gold));
+    border-radius: 999px;
+    transition: width .25s linear;
+  }
+  #bar.idle i { width: 100%; opacity: .18; }
+
+  #cache { margin: 0 0 14px; min-height: 18px; font-size: 12.5px; color: #5f6b7c; }
+  #cache.cacheok { color: var(--ok); }
+
+  .hint {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--dim);
+  }
+  .hint b { color: var(--gold); }
+
+  .fwlist {
+    margin: 22px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: #6c7788;
+    letter-spacing: .02em;
+  }
+  .fwlist span { color: #aab4c3; }
+
+  footer {
+    padding: 0 20px 18px;
+    text-align: center;
+    font-size: 11.5px;
+    color: #4e5866;
+    letter-spacing: .03em;
+  }
+
+  .ok   { color: var(--ok); }
+  .bad  { color: var(--bad); }
+  .warn { color: var(--warn); }
+
+  @media (max-width: 520px) {
+    .card { padding: 26px 20px 24px; }
+    h1 { font-size: 22px; }
+    .logo { width: 88px; height: 88px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <svg viewBox="0 0 64 64" aria-hidden="true">
+    <defs>
+      <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffd76a"/>
+        <stop offset="1" stop-color="#d99a1f"/>
+      </linearGradient>
+    </defs>
+    <circle cx="32" cy="32" r="30" fill="none" stroke="url(#lg)" stroke-width="2" opacity=".45"/>
+    <circle cx="32" cy="32" r="24" fill="#11141c" stroke="url(#lg)" stroke-width="2.5"/>
+    <path d="M35 12 L21 36 h9 l-3 16 14-24 h-9 z" fill="url(#lg)"/>
+  </svg>
+  <b id="hostName">Host PS4</b>
+  <span class="pill">PS4 &middot; 13.52</span>
+</header>
+
+<main>
+  <section class="card">
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffd76a"/>
+          <stop offset="1" stop-color="#d99a1f"/>
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="30" fill="none" stroke="url(#lg2)" stroke-width="1.5" opacity=".35"/>
+      <circle cx="32" cy="32" r="23" fill="#0f131b" stroke="url(#lg2)" stroke-width="2.5"/>
+      <path d="M35 11 L20 37 h9 l-3 16 15-26 h-9 z" fill="url(#lg2)"/>
+    </svg>
+
+    <h1 id="state">Detectando firmware&hellip;</h1>
+    <p id="det"></p>
+    <div id="bar" class="idle"><i></i></div>
+    <p id="action"></p>
+    <p id="cache"></p>
+    <p class="hint" id="hint">La secuencia se inicia sola. Si se queda quieto, <b>toca la pantalla</b> o pulsa <b>X</b>.</p>
+    <p class="fwlist">Compatible: <span>13.02 &middot; 13.04 &middot; 13.50 &middot; 13.52</span></p>
+  </section>
+</main>
+
+<footer>Host no oficial &middot; USA ESTO BAJO TU PROPIA RESPONSABILIDAD &middot; No actualices la consola</footer>
+
+<script>
+(function () {
+    var stateEl = document.getElementById("state");
+    var detEl = document.getElementById("det");
+    var cacheEl = document.getElementById("cache");
+    var actionEl = document.getElementById("action");
+    var barEl = document.getElementById("bar");
+    var fillEl = barEl.querySelector("i");
+
+    function setState(t, c) {
+        stateEl.textContent = t;
+        stateEl.className = c || "";
+    }
+    function setAction(t) {
+        actionEl.textContent = t || "";
+    }
+    function setCache(t, ok) {
+        cacheEl.textContent = t;
+        cacheEl.className = ok ? "cacheok" : "";
+    }
+    function setProgress(p) {
+        barEl.className = "";
+        fillEl.style.width = Math.max(0, Math.min(100, p)) + "%";
+    }
+    function resetBar() {
+        barEl.className = "idle";
+        fillEl.style.width = "0%";
+    }
+
+    var params = new URLSearchParams(location.search);
+
+    // Firmwares con tabla de kernel medida en este build. jb.js vuelve a
+    // comprobar su propia tabla, asÃ­ que esto es solo la experiencia de uso:
+    // un firmware no listado se puede lanzar igualmente tocando la pantalla.
+    // MANTENER SINCRONIZADO con ps4_offsets.js.
+    // El minor de PS4 viene en hexadecimal en el User-Agent (13.52 -> 0x52).
+    var SUPPORTED = { 1302: 1, 1304: 1, 1350: 1, 1352: 1 }; // medidos en hardware
+
+    var key = null, fwnum = null;
+    var m = /PlayStation\s+4[\/ ](\d+)\.(\d+)/.exec(navigator.userAgent);
+    if (m) {
+        var ms = parseInt(m[2], 16).toString(16);
+        if (ms.length < 2) ms = "0" + ms;
+        key = m[1] + "." + ms;
+        fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
+    }
+
+    var forced = params.get("force") === "1";
+    var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
+    detEl.innerHTML = "Firmware <b>" + (key || "desconocido") + "</b>"
+        + (supported ? " &middot; <b>compatible</b>"
+                     : " &middot; no estÃ¡ en la tabla de este build");
+
+    var target = "jb.html" + location.search;
+    function go() { setState("Iniciando GoldHEN\u2026", "warn"); setAction(""); location.replace(target); }
+
+    function waitForTap(msg, action) {
+        setAction(msg);
+        function fire() {
+            window.removeEventListener("click", fire);
+            window.removeEventListener("keydown", fire);
+            action();
+        }
+        window.addEventListener("click", fire);
+        window.addEventListener("keydown", fire);
+    }
+
+    // En firmware no listado no se lanza solo: un toque lo ejecuta igual, para
+    // que un User-Agent raro en la consola real nunca lo deje bloqueado.
+    if (!supported) {
+        setState("Firmware no compatible", "bad");
+        document.getElementById("hint").style.display = "none";
+        waitForTap("No compatible (" + (key || "desconocido") + ") \u2014 toca o pulsa X para intentarlo igualmente", go);
+        return;
+    }
+
+    var ac = window.applicationCache;
+    if (!ac || !document.documentElement.hasAttribute("manifest")) {
+        go();
+    } else if (!navigator.onLine) {
+        setCache("Sin conexiÃ³n \u2014 usando la cachÃ©", true);
+        go();
+    } else if (ac.status === ac.IDLE) {
+        setCache("En cachÃ©", true);
+        go();
+    } else if (ac.status === ac.UPDATEREADY) {
+        try { ac.swapCache(); } catch (e) {}
+        setCache("ActualizaciÃ³n descargada", true);
+        setState("ActualizaciÃ³n lista", "warn");
+        waitForTap("Toca la pantalla o pulsa X para recargar y ejecutar",
+                   function () { location.reload(); });
+    } else {
+        setCache("Comprobando cachÃ©\u2026");
+        ac.addEventListener("downloading",
+            function () { setState("Preparando el host", "warn"); setCache("Guardando en cachÃ© (primera vez)\u2026"); }, false);
+        ac.addEventListener("progress", function (e) {
+            if (e && e.total) {
+                var pct = Math.round((e.loaded / e.total) * 100);
+                setCache("Guardando en cachÃ© " + pct + "%");
+                setProgress(pct);
+            }
+        }, false);
+        ac.addEventListener("cached", function () {
+            resetBar();
+            setCache("Guardado para usar sin conexiÃ³n", true);
+            setState("Host listo", "ok");
+            waitForTap("Toca la pantalla o pulsa X para ejecutar", go);
+        }, false);
+        ac.addEventListener("updateready", function () {
+            try { ac.swapCache(); } catch (e) {}
+            setCache("ActualizaciÃ³n descargada", true);
+            setState("ActualizaciÃ³n lista", "warn");
+            waitForTap("Toca la pantalla o pulsa X para recargar y ejecutar",
+                       function () { location.reload(); });
+        }, false);
+        ac.addEventListener("noupdate", function () {
+            resetBar();
+            setCache("En cachÃ© \u2014 listo sin conexiÃ³n", true);
+            go();
+        }, false);
+        ac.addEventListener("error", function () {
+            resetBar();
+            setCache("CachÃ© no disponible");
+            setState("CachÃ© no disponible", "bad");
+            waitForTap("Toca la pantalla o pulsa X para ejecutar igualmente", go);
+        }, false);
+        ac.addEventListener("obsolete", function () {
+            resetBar();
+            setCache("CachÃ© obsoleta");
+            setState("CachÃ© obsoleta", "warn");
+            waitForTap("Toca la pantalla o pulsa X para ejecutar", go);
+        }, false);
+    }
+})();
+</script>
+</body>
+</html>
