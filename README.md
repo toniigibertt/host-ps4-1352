@@ -13,6 +13,9 @@ español, logo y nombre).
 > cuelgues o *kernel panic* (la consola se apaga o se reinicia). No actualices la
 > consola. El jailbreak **no es permanente**: se pierde al apagar la PS4.
 
+🌐 **Ya está publicado:** <https://toniigibertt.github.io/host-ps4-1352/>
+— abre esa URL en el navegador de la PS4.
+
 ---
 
 ## Qué hace exactamente

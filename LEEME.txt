@@ -9,6 +9,9 @@ Basado en github.com/raw13g/raw13g.github.io (solo se ha cambiado el diseño).
 
 Uso rápido
 ----------
+URL publicada:  https://toniigibertt.github.io/host-ps4-1352/
+Abre esa dirección en el navegador de la PS4 (o publica tu propia copia).
+
 1) Sube TODA esta carpeta a un hosting (GitHub Pages o Netlify Drop), o usa el
    servidor local:
      - Clic derecho en INICIAR-LOCAL.ps1 > Ejecutar con PowerShell
