@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" manifest="cache.appcache">
 <head>
 <meta charset="utf-8">
@@ -33,7 +33,7 @@
     min-height: 100vh;
   }
 
-  /* Franja superior: cambia HOST_NAME aquÃ­ y en jb.html para renombrar el host */
+  /* Franja superior: cambia HOST_NAME aquí y en jb.html para renombrar el host */
   header {
     display: flex;
     align-items: center;
@@ -240,7 +240,7 @@
     var params = new URLSearchParams(location.search);
 
     // Firmwares con tabla de kernel medida en este build. jb.js vuelve a
-    // comprobar su propia tabla, asÃ­ que esto es solo la experiencia de uso:
+    // comprobar su propia tabla, así que esto es solo la experiencia de uso:
     // un firmware no listado se puede lanzar igualmente tocando la pantalla.
     // MANTENER SINCRONIZADO con ps4_offsets.js.
     // El minor de PS4 viene en hexadecimal en el User-Agent (13.52 -> 0x52).
@@ -259,7 +259,7 @@
     var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
     detEl.innerHTML = "Firmware <b>" + (key || "desconocido") + "</b>"
         + (supported ? " &middot; <b>compatible</b>"
-                     : " &middot; no estÃ¡ en la tabla de este build");
+                     : " &middot; no está en la tabla de este build");
 
     var target = "jb.html" + location.search;
     function go() { setState("Iniciando GoldHEN\u2026", "warn"); setAction(""); location.replace(target); }
@@ -288,56 +288,56 @@
     if (!ac || !document.documentElement.hasAttribute("manifest")) {
         go();
     } else if (!navigator.onLine) {
-        setCache("Sin conexiÃ³n \u2014 usando la cachÃ©", true);
+        setCache("Sin conexión \u2014 usando la caché", true);
         go();
     } else if (ac.status === ac.IDLE) {
-        setCache("En cachÃ©", true);
+        setCache("En caché", true);
         go();
     } else if (ac.status === ac.UPDATEREADY) {
         try { ac.swapCache(); } catch (e) {}
-        setCache("ActualizaciÃ³n descargada", true);
-        setState("ActualizaciÃ³n lista", "warn");
+        setCache("Actualización descargada", true);
+        setState("Actualización lista", "warn");
         waitForTap("Toca la pantalla o pulsa X para recargar y ejecutar",
                    function () { location.reload(); });
     } else {
-        setCache("Comprobando cachÃ©\u2026");
+        setCache("Comprobando caché\u2026");
         ac.addEventListener("downloading",
-            function () { setState("Preparando el host", "warn"); setCache("Guardando en cachÃ© (primera vez)\u2026"); }, false);
+            function () { setState("Preparando el host", "warn"); setCache("Guardando en caché (primera vez)\u2026"); }, false);
         ac.addEventListener("progress", function (e) {
             if (e && e.total) {
                 var pct = Math.round((e.loaded / e.total) * 100);
-                setCache("Guardando en cachÃ© " + pct + "%");
+                setCache("Guardando en caché " + pct + "%");
                 setProgress(pct);
             }
         }, false);
         ac.addEventListener("cached", function () {
             resetBar();
-            setCache("Guardado para usar sin conexiÃ³n", true);
+            setCache("Guardado para usar sin conexión", true);
             setState("Host listo", "ok");
             waitForTap("Toca la pantalla o pulsa X para ejecutar", go);
         }, false);
         ac.addEventListener("updateready", function () {
             try { ac.swapCache(); } catch (e) {}
-            setCache("ActualizaciÃ³n descargada", true);
-            setState("ActualizaciÃ³n lista", "warn");
+            setCache("Actualización descargada", true);
+            setState("Actualización lista", "warn");
             waitForTap("Toca la pantalla o pulsa X para recargar y ejecutar",
                        function () { location.reload(); });
         }, false);
         ac.addEventListener("noupdate", function () {
             resetBar();
-            setCache("En cachÃ© \u2014 listo sin conexiÃ³n", true);
+            setCache("En caché \u2014 listo sin conexión", true);
             go();
         }, false);
         ac.addEventListener("error", function () {
             resetBar();
-            setCache("CachÃ© no disponible");
-            setState("CachÃ© no disponible", "bad");
+            setCache("Caché no disponible");
+            setState("Caché no disponible", "bad");
             waitForTap("Toca la pantalla o pulsa X para ejecutar igualmente", go);
         }, false);
         ac.addEventListener("obsolete", function () {
             resetBar();
-            setCache("CachÃ© obsoleta");
-            setState("CachÃ© obsoleta", "warn");
+            setCache("Caché obsoleta");
+            setState("Caché obsoleta", "warn");
             waitForTap("Toca la pantalla o pulsa X para ejecutar", go);
         }, false);
     }
